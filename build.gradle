@@ -20,20 +20,20 @@ repositories {
 applicationDefaultJvmArgs = ["--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED"]
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     //compile 'com.google.guava:guava:21.0'
 
     // Use JUnit test framework
-//    testCompile 'junit:junit:4.12'
-    testImplementation name: 'jpf'
-    testImplementation name: 'jpf-annotations'
-    implementation('org.slf4j:slf4j-api:1.7.26')
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    testCompile 'junit:junit:4.12'
+    compile name: 'jpf'
+    compile name: 'jpf-annotations'
+//    compile('org.slf4j:slf4j-api:1.7.26')
+//    compile("ch.qos.logback:logback-classic:1.2.3")
 }
 
 mainClassName = 'HelloApp'
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}

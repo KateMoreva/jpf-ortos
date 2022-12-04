@@ -5,8 +5,6 @@ import Resources.Resource;
 import Resources.Semaphore;
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,22 +27,20 @@ public class OrtOS implements OsAPI {
 
     private final Lock currentTaskLock = new ReentrantLock(false);
 
-    private static final Logger log = LoggerFactory.getLogger(OrtOS.class);
-
     public final OsInfo info;
 
     public void printSystemInfo() {
-        log.info("Количество полученных задач: {}\n" +
-                        "Количество выполненных задач: {}\n" +
-                        "Количество задач, отложенных из-за ожидания ресурса: {}\n" +
-                        "Количество задач, которые дождались ожидаемых ресурсов: {}\n" +
-                        "Максимальное количество задач в очереди: {}\n" +
-                        "Максимальное количество ресурсов: {}\n" +
-                        "Количество прерываний: {}\n" +
-                        "Количество объявленных локальных ресурсов: {}\n" +
-                        "Диспетчер корректно завершил работу: {}\n" +
-                        "ОС корректно завершила работу: {}\n" +
-                        "Наличие дедлоков: {}",
+        System.out.printf("Количество полученных задач: %d\n" +
+                        "Количество выполненных задач: %d\n" +
+                        "Количество задач, отложенных из-за ожидания ресурса: %d\n" +
+                        "Количество задач, которые дождались ожидаемых ресурсов: %d\n" +
+                        "Максимальное количество задач в очереди: %d\n" +
+                        "Максимальное количество ресурсов: %d\n" +
+                        "Количество прерываний: %d\n" +
+                        "Количество объявленных локальных ресурсов: %d\n" +
+                        "Диспетчер корректно завершил работу: %b\n" +
+                        "ОС корректно завершила работу: %b\n" +
+                        "Наличие дедлоков: %b%n",
                 info.getTasksTookCount(),
                 info.getTasksDoneCount(),
                 info.getWaitingForResourceTasksCount(),
@@ -75,7 +71,7 @@ public class OrtOS implements OsAPI {
                 getResource(res);
                 currentTask.waitingFor = null;
                 info.incrementGotWaitingForResourceTasksCount();
-                log.debug("Задача " + takenTask + " получила необходимый ресурс " + res);
+                System.out.println("Задача " + takenTask + " получила необходимый ресурс " + res);
             }
         }, doneTask -> info.incrementTasksDoneCount());
         this.currentTask = null;
@@ -96,10 +92,10 @@ public class OrtOS implements OsAPI {
     public void activateTask(Task task) {
         final Task currentTask = getActiveTask();
         if (currentTask == null) {
-            log.debug("Диспетчер простаивает! Ставим на выполнение задачу " + task);
+            System.out.println("Диспетчер простаивает! Ставим на выполнение задачу " + task);
             terminateTask();
         } else if (currentTask.priority < task.priority) {
-            log.debug("Произошло прерывание! Активируем задачу " + task);
+            System.out.println("Произошло прерывание! Активируем задачу " + task);
             info.incrementInterruptionsCount();
             terminateTask();
         }
@@ -132,7 +128,7 @@ public class OrtOS implements OsAPI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.debug("This is the end...");
+        System.out.println("This is the end...");
         info.setDispatcherFinishedCorrectly();
         info.setOsFinishedCorrectly();
     }
@@ -156,7 +152,7 @@ public class OrtOS implements OsAPI {
     public void P(final Semaphore newSemaphore) {
         // TODO: можно ли хватать один и тот же ресурс?
         if (newSemaphore.getResource().ownerTaskId()== newSemaphore.getOwnerTaskId()) {
-            log.debug("Одна и та же задача хватает один и тот же ресурс.");
+            System.out.println("Одна и та же задача хватает один и тот же ресурс.");
             return;
         }
         if (!newSemaphore.getResource().isFree()) {
@@ -165,7 +161,7 @@ public class OrtOS implements OsAPI {
             withCurrentTask(task -> {
                 task.waitingFor = newSemaphore.getResource();
                 info.incrementWaitingForResourceTasksCount();
-                log.debug("Задача {} ожидает освобождение ресурса {}", task, newSemaphore.getResource());
+                System.out.printf("Задача %s ожидает освобождение ресурса %s \n", task.toString(), newSemaphore.getResource().toString());
                 terminateTask();
             });
             return;
@@ -176,7 +172,7 @@ public class OrtOS implements OsAPI {
             throw new IllegalStateException("МыЯ (не) захватили ресурс");
         }
         activeTask.mineResources.add(newSemaphore.getResource());
-        log.debug("Ресурс {} захвачен задачей {}", newSemaphore.getResource(), activeTask.taskId);
+        System.out.printf("Ресурс %s захвачен задачей %d %n", newSemaphore.getResource().toString(), activeTask.taskId);
     }
 
     @Override
@@ -190,7 +186,7 @@ public class OrtOS implements OsAPI {
         if (s.getResource().isLocal) {
             resourceList.remove(s.getResource());
         }
-        log.debug("Задача {} отпустила ресурс {}", activeTask, s.getResource());
+        System.out.printf("Задача %s отпустила ресурс %s\n", activeTask.toString(), s.getResource().toString());
     }
 
     /**
@@ -208,7 +204,7 @@ public class OrtOS implements OsAPI {
             throw new IllegalStateException("Список ресурсов переполнен!");
         }
         final Resource resource = new Resource(resourceId, isLocal);
-        log.debug("Создан новый ресурс: " + resource);
+        System.out.println("Создан новый ресурс: " + resource);
 
         if (isLocal) {
             info.incrementLocalResourcesDeclared();
@@ -229,7 +225,7 @@ public class OrtOS implements OsAPI {
             return null;
         }
         final Task task = new Task(taskId, priority, this);
-        log.debug("Объявлена новая задача: " + task);
+        System.out.println("Объявлена новая задача: " + task);
         activateTask(task);
         info.incrementTasksTookCount();
         return task;
@@ -251,19 +247,19 @@ public class OrtOS implements OsAPI {
         EventGenerator.EventType eventType = osEvent.eventType;
         switch (eventType) {
             case declareTask:
-                log.debug("Событие: создание новой задачи.");
+                System.out.println("Событие: создание новой задачи.");
                 declareTask(osEvent.taskId, osEvent.taskPriority);
                 break;
             case declareResource:
                 withCurrentTask((task) -> {
-                    log.debug("Событие: создание локального ресурса.");
+                    System.out.println("Событие: создание локального ресурса.");
                     final Resource resource = declareResource(osEvent.resourceId, true);
                     getResource(resource);
                 });
                 break;
             case getRecourse:
                 withCurrentTask((task) -> {
-                    log.debug("Событие: попытка захвата глобального ресурса.");
+                    System.out.println("Событие: попытка захвата глобального ресурса.");
                     final Resource resource = resourceList.get(osEvent.globalResourceIndex);
                     if (resource.isLocal) {
                         throw new IllegalStateException("Ожидался глобальный ресурс, а получен локальный.");
