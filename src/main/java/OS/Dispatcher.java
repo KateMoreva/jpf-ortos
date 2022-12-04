@@ -2,9 +2,6 @@ package OS;
 
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,7 +13,6 @@ public class Dispatcher extends Thread {
     public final Consumer<Task> currentTaskCallback;
     public final Consumer<Task> taskDoneCallback;
 
-    private static final Logger log = LoggerFactory.getLogger(Dispatcher.class);
     private final AtomicBoolean isFree = new AtomicBoolean(true);
 
     public Dispatcher(final TaskPriorityQueue taskQueue, final Consumer<Task> currentTaskCallback, final Consumer<Task> taskDoneCallback) {
@@ -24,7 +20,7 @@ public class Dispatcher extends Thread {
         this.taskQueue = taskQueue;
         this.currentTaskCallback = currentTaskCallback;
         this.taskDoneCallback = taskDoneCallback;
-        log.debug("Диспетчер готов к работе!");
+        System.out.println("Диспетчер готов к работе!");
     }
 
     @Override
@@ -47,23 +43,23 @@ public class Dispatcher extends Thread {
                 if (task.payload == null) {
                     // ммм, сладкая пилюля с ядом...
                     if (taskQueue.size() > 0) {
-                        log.debug("В диспетчере остались заблокированные задачи ({} штук)", taskQueue.size());
+                        System.out.println("В диспетчере остались заблокированные задачи " + taskQueue.size());
                     }
-                    log.debug("Диспетчер завершает свою работу.");
+                    System.out.println("Диспетчер завершает свою работу.");
                     return;
                 }
-                log.debug("Диспетчер взял задачу " + task);
+                System.out.println("Диспетчер взял задачу " + task);
                 currentTaskCallback.accept(task);
                 task.payload.run();
                 isFree.set(true);
                 // isFree = true => Диспетчер нельзя прервать, когда он свободен.
                 if (!task.payload.done()) {
-                    log.debug("Диспетчер вернул задачу  " + task + " в очередь");
+                    System.out.println("Диспетчер вернул задачу  " + task + " в очередь");
                     taskQueue.add(task);
                 } else {
                     task.releaseAllResources();
                     taskDoneCallback.accept(task);
-                    log.debug("Диспетчер отпустил задачу " + task);
+                    System.out.println("Диспетчер отпустил задачу " + task);
                 }
                 // закончили работу
                 currentTaskCallback.accept(null);
@@ -71,10 +67,10 @@ public class Dispatcher extends Thread {
                 isFree.set(true);
                 // нас прервали!
                 if (task != null && !task.payload.done()) {
-                    log.debug("Диспетчер вернул задачу  " + task + " в очередь");
+                    System.out.println("Диспетчер вернул задачу  " + task + " в очередь");
                     taskQueue.add(task);
                 }
-                log.debug("Исполнение задачи " + task + " прервано. Диспетчер переходит к следующей.");
+                System.out.println("Исполнение задачи " + task + " прервано. Диспетчер переходит к следующей.");
             }
         }
     }

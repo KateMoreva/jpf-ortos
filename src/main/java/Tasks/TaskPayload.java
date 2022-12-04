@@ -1,14 +1,9 @@
 package Tasks;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public final class TaskPayload implements Runnable {
 
     private static final long EPSILON = 0L;
 
-    private static final Logger log = LoggerFactory.getLogger(TaskPayload.class);
-    
     long workingTime;
 
     final Task task;
@@ -23,7 +18,7 @@ public final class TaskPayload implements Runnable {
         final long goToBedTime = System.currentTimeMillis();
         long lastWakeupTime = goToBedTime;
         try {
-            log.debug("Tasks.TaskPayload: Начало выполнения задачи" + task +  ". Требуемое время: " + workingTime);
+            System.out.println("Tasks.TaskPayload: Начало выполнения задачи" + task +  ". Требуемое время: " + workingTime);
             while (true) {
                 Thread.sleep(workingTime);
                 final long timeAtAlarm = System.currentTimeMillis();
@@ -34,14 +29,14 @@ public final class TaskPayload implements Runnable {
                 lastWakeupTime = timeAtAlarm;
             }
         } catch (final InterruptedException e) {
-            log.debug("Tasks.TaskPayload: Выполнение задачи" + task +  ".  прервано.");
+            System.out.println("Tasks.TaskPayload: Выполнение задачи" + task +  ".  прервано.");
         }
         final long awaitTime = System.currentTimeMillis();
         workingTime -= (awaitTime - lastWakeupTime);
         if (done()) {
-            log.debug("Tasks.TaskPayload: Задача" + task +  ".  выполнена успешно.");
+            System.out.println("Tasks.TaskPayload: Задача" + task +  ".  выполнена успешно.");
         } else {
-            log.debug("Tasks.TaskPayload: Вернёмся к задаче" + task +  ".  позже. Осталось: " + workingTime);
+            System.out.println("Tasks.TaskPayload: Вернёмся к задаче" + task +  ".  позже. Осталось: " + workingTime);
         }
     }
 

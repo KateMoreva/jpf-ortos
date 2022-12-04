@@ -18,7 +18,7 @@ public class BaseTest {
             os.startOS(taskToStart);
             eventsGenerator.start();
             Thread.sleep(timeout);
-//            log.debug("Время timeout истекло!");
+//            System.out.println("Время timeout истекло!");
         } catch (final InterruptedException e) {
             e.printStackTrace();
         } finally {

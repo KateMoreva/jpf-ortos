@@ -2,8 +2,6 @@ import EventGenerators.EventGenerator;
 import OS.OrtOS;
 import OS.OsAPI;
 import Tasks.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +13,13 @@ public class BaseTest {
 
     protected static final Random RANDOM = new Random(2L);
 
-    protected static final Logger log = LoggerFactory.getLogger(BaseTest.class);
-
     public static void simulateOS(final OsAPI os, final EventGenerator eventsGenerator, final long timeout) {
         final Task taskToStart = new Task(0, MAX_PRIORITY, os);
         try {
             os.startOS(taskToStart);
             eventsGenerator.start();
             Thread.sleep(timeout);
-            log.debug("Время timeout истекло!");
+            System.out.println("Время timeout истекло!");
         } catch (final InterruptedException e) {
             e.printStackTrace();
         } finally {

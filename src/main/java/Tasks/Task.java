@@ -5,6 +5,7 @@ import Resources.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Task implements Comparable<Task> {
 
@@ -23,7 +24,7 @@ public class Task implements Comparable<Task> {
         this.taskId = taskId;
         this.priority = priority;
         this.payload = entry;
-        this.mineResources = new ArrayList<>();
+        this.mineResources = new CopyOnWriteArrayList<>();
         this.os = os;
     }
 
