@@ -1,17 +1,14 @@
-//import EventGenerators.EventGenerator;
-//import OS.OrtOS;
-//import gov.nasa.jpf.vm.Verify;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.Test;
-//
-//import static OS.OrtOS.MAX_TASK_COUNT;
-//
-//public class OsTest extends BaseTest {
-//
-//    private final String noExceptionString = "Поток операционной системы не должен выбрасывать исключения во время работы";
-//
-//
-//
+import org.junit.Test;
+
+import EventGenerators.EventGenerator;
+import OS.OrtOS;
+
+public class OsTestReal extends RealBaseTest {
+
+    private final String noExceptionString = "Поток операционной системы не должен выбрасывать исключения во время работы";
+
+
+
 //    // Тест на обработку прерываний
 //    // Ждём 2 секунды, пока выполнится начальная задача в ОС.
 //    // Затем объявляем задачу с приоритетом 5. Ждём 200 мс.
@@ -88,26 +85,30 @@
 //        Assertions.assertTrue(os.info.getDispatcherFinishedCorrectly(), "Диспетчер должен завершиться без ошибок");
 //        Assertions.assertTrue(os.info.getOsFinishedCorrectly(), "ОС должна завершиться без ошибок");
 //    }
-//
-//    // Тест на deadlock ситуацию
-//    @Test
-//    public void deadlockTest() {
-//        final OrtOS os = createOS();
-//        final EventGenerator generator = createGenerator(
-//                os,
-//                // Ждём 2 секунды, пока выполнится начальная задача в ОС. Затем объявляем задачу с приоритетом 5.
-//                new TestEvent(2000L, EventGenerator.OsEvent.declareTaskEvent(1, 5)),
-//                // Ждём 20 мс. Захватываем глобальный ресурс 0.
-//                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(0)),
-//                // Ждём 100 мс. Объявляем задачу с высшим приоритетом и ожидаем, что она вытеснит предыдущую.
-//                new TestEvent(100L, EventGenerator.OsEvent.declareTaskEvent(2, 10)),
-//                // Ждём 20 мс. Захватываем ресурс 1.
-//                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(1)),
-//                // Ждём 20 мс. Пытаемся захватить ресурс 0 - и засыпаем.
-//                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(0)),
-//                // Ждём 100 мс. Проснувшаяся задача с приоритетом 5 пытается захватить ресурс 1 и тоже засыпает.
-//                new TestEvent(100L, EventGenerator.OsEvent.getGlobalResource(1))
-//        );
+
+    // Тест на deadlock ситуацию
+    @Test
+    public void deadlockTest() {
+        final OrtOS os = createOS();
+        final EventGenerator generator = createGenerator(
+                os,
+                // Ждём 2 секунды, пока выполнится начальная задача в ОС. Затем объявляем задачу с приоритетом 5.
+                new TestEvent(2000L, EventGenerator.OsEvent.declareTaskEvent(1, 5)),
+                // Ждём 20 мс. Захватываем глобальный ресурс 0.
+                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(0)),
+                // Ждём 100 мс. Объявляем задачу с высшим приоритетом и ожидаем, что она вытеснит предыдущую.
+                new TestEvent(100L, EventGenerator.OsEvent.declareTaskEvent(2, 10)),
+                // Ждём 20 мс. Захватываем ресурс 1.
+                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(1)),
+                // Ждём 20 мс. Пытаемся захватить ресурс 0 - и засыпаем.
+                new TestEvent(20L, EventGenerator.OsEvent.getGlobalResource(0)),
+                // Ждём 100 мс. Проснувшаяся задача с приоритетом 5 пытается захватить ресурс 1 и тоже засыпает.
+                new TestEvent(100L, EventGenerator.OsEvent.getGlobalResource(1))
+        );
+        System.out.println(generator);
+        simulateOS(os, generator, 5000L);
+        os.printSystemInfo();
+
 //        Assertions.assertDoesNotThrow(() -> simulateOS(os, generator, 5000L), noExceptionString);
 //        os.printSystemInfo();
 //        Assertions.assertEquals(os.info.getInterruptionsCount(), 1, "Количество прерываний должно быть равно 1");
@@ -115,6 +116,6 @@
 //        Assertions.assertTrue(os.info.hasDeadlocks(), "Должно быть состояние дедлока");
 //        Assertions.assertTrue(os.info.getDispatcherFinishedCorrectly(), "Диспетчер должен завершиться без ошибок");
 //        Assertions.assertTrue(os.info.getOsFinishedCorrectly(), "ОС должна завершиться без ошибок");
-//
-//    }
-//}
+
+    }
+}

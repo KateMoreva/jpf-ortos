@@ -9,13 +9,14 @@ import java.util.Random;
 
 import static OS.OrtOS.MAX_PRIORITY;
 
-public class BaseTest {
+public class RealBaseTest {
 
     protected static final Random RANDOM = new Random(2L);
 
     public static void simulateOS(final OsAPI os, final EventGenerator eventsGenerator, final long timeout) {
         final Task taskToStart = new Task(0, MAX_PRIORITY, os);
         try {
+            System.out.println("STAAAAART");
             os.startOS(taskToStart);
             eventsGenerator.start();
             Thread.sleep(timeout);
@@ -23,8 +24,10 @@ public class BaseTest {
         } catch (final InterruptedException e) {
             e.printStackTrace();
         } finally {
+            System.out.println("SHUT");
             os.shutdownOS();
         }
+        System.out.println("INTERRRUPT");
         eventsGenerator.interrupt();
         try {
             eventsGenerator.join();
@@ -34,6 +37,7 @@ public class BaseTest {
     }
 
     public static OrtOS createOS() {
+        System.out.println("CREATE");
         return new OrtOS();
     }
 
@@ -43,10 +47,12 @@ public class BaseTest {
     ) {
         final List<Long> timeouts = new ArrayList<>();
         final List<EventGenerator.OsEvent> events = new ArrayList<>();
+        System.out.println(" !!!!!!!!!!!!!!!!!! ");
         for (final TestEvent testEvent : testEvents) {
             timeouts.add(testEvent.timeout);
             events.add(testEvent.event);
         }
+        System.out.println(" !!!!!!!!!!!!!!!!!! " + timeouts.size() + "   " + events.size());
         return new EventGenerator(
                 timeouts.iterator(),
                 events.iterator(),

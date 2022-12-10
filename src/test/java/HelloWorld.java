@@ -8,6 +8,13 @@ public class HelloWorld extends Thread {
     }
 
     public void run() {
+        try {
+            System.out.println("STAAAAART" + System.currentTimeMillis());
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("STOOOOOOOP" + System.currentTimeMillis());
         buf.append(data);
     }
 }
