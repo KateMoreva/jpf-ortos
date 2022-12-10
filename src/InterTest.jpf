@@ -1,2 +1,2 @@
-target=InterTest
-classpath=/home/katerina/Documents/Work/5s/jpf-ortos/build/classes/java/main
+target=InterruptionTest
+classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main

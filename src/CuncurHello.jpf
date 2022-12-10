@@ -1,0 +1,3 @@
+target=CuncurHello
+classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/test
+cg.enumerate_random=true

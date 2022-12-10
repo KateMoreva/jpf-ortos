@@ -10,6 +10,7 @@ public final class TaskPayload implements Runnable {
 
     public TaskPayload(final Task task) {
         this.workingTime = (long) (Math.random() * 1500) + 200L;
+        System.out.println("Working time " + workingTime);
         this.task = task;
     }
 

@@ -33,7 +33,7 @@ public class Task implements Comparable<Task> {
         this.taskId = taskId;
         this.priority = priority;
         this.payload = new TaskPayload(this);
-        this.mineResources = new ArrayList<>();
+        this.mineResources = new CopyOnWriteArrayList<>();
         this.os = os;
     }
 

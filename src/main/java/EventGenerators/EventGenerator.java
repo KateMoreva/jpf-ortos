@@ -31,6 +31,17 @@ public class EventGenerator extends Thread {
         public static OsEvent getGlobalResource(final int globalResourceIndex) {
             return new OsEvent(EventType.getRecourse, null, null, null, globalResourceIndex);
         }
+
+        @Override
+        public String toString() {
+            return "OsEvent{" +
+                "eventType=" + eventType +
+                ", taskId=" + taskId +
+                ", taskPriority=" + taskPriority +
+                ", resourceId=" + resourceId +
+                ", globalResourceIndex=" + globalResourceIndex +
+                '}';
+        }
     }
 
     public enum EventType {
@@ -77,5 +88,14 @@ public class EventGenerator extends Thread {
             final OsEvent randomEvent = typeGenerator.next();
             eventConsumer.accept(randomEvent);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "EventGenerator{" +
+            "eventConsumer=" + eventConsumer +
+            ", sleepGenerator=" + sleepGenerator +
+            ", typeGenerator=" + typeGenerator +
+            '}';
     }
 }

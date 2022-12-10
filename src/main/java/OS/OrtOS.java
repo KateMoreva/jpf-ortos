@@ -26,6 +26,7 @@ public class OrtOS implements OsAPI {
     private Task currentTask;
 
     private final Lock currentTaskLock = new ReentrantLock(false);
+    final AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     public final OsInfo info;
 
@@ -116,8 +117,6 @@ public class OrtOS implements OsAPI {
         activateTask(firstTask);
     }
 
-    final AtomicBoolean shuttingDown = new AtomicBoolean(false);
-
     @Override
     public void shutdownOS() {
         shuttingDown.set(true);
@@ -198,10 +197,12 @@ public class OrtOS implements OsAPI {
                 .stream()
                 .anyMatch(resource -> resource.id == resourceId);
         if (present) {
-            throw new IllegalStateException("Ресурс с таким ID уже существует!");
+            System.out.println("Попытка Ресурс с таким ID уже существует!");
+            return null;
         }
         if (resourceList.size() >= MAX_RECOURSE_COUNT) {
-            throw new IllegalStateException("Список ресурсов переполнен!");
+            System.out.println("Попытка переполнения списка ресурсов!");
+            return null;
         }
         final Resource resource = new Resource(resourceId, isLocal);
         System.out.println("Создан новый ресурс: " + resource);
@@ -221,9 +222,10 @@ public class OrtOS implements OsAPI {
      * коде пользовательского приложения.
      */
     public Task declareTask(int taskId, int priority) {
-        if (shuttingDown.get()) {
-            return null;
-        }
+//        System.out.println("IS SHUTDOWN"+shuttingDown);
+//        if (shuttingDown.get()) {
+//            return null;
+//        }
         final Task task = new Task(taskId, priority, this);
         System.out.println("Объявлена новая задача: " + task);
         activateTask(task);
@@ -245,6 +247,7 @@ public class OrtOS implements OsAPI {
 
     public void interpretEvent(final EventGenerator.OsEvent osEvent) {
         EventGenerator.EventType eventType = osEvent.eventType;
+        System.out.println("Пришло событие "+ osEvent);
         switch (eventType) {
             case declareTask:
                 System.out.println("Событие: создание новой задачи.");
@@ -254,7 +257,10 @@ public class OrtOS implements OsAPI {
                 withCurrentTask((task) -> {
                     System.out.println("Событие: создание локального ресурса.");
                     final Resource resource = declareResource(osEvent.resourceId, true);
-                    getResource(resource);
+                    if (resource != null) {
+                        System.out.println("Res npe check");
+                        getResource(resource);
+                    }
                 });
                 break;
             case getRecourse:

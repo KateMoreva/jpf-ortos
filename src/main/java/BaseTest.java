@@ -1,31 +1,33 @@
-import EventGenerators.EventGenerator;
-import OS.OrtOS;
-import OS.OsAPI;
-import Tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static OS.OrtOS.MAX_PRIORITY;
+import EventGenerators.EventGenerator;
+import OS.OrtOS;
+import OS.OsAPI;
+import Tasks.Task;
+import gov.nasa.jpf.vm.Verify;
 
-public class BaseTest {
-
-    protected static final Random RANDOM = new Random(2L);
+public class BaseTest extends Thread {
 
     public static void simulateOS(final OsAPI os, final EventGenerator eventsGenerator, final long timeout) {
         final Task taskToStart = new Task(0, MAX_PRIORITY, os);
+        System.out.println("STAAAAART" + timeout);
+        os.startOS(taskToStart);
+        eventsGenerator.start();
+        System.out.println("Время ! " + System.currentTimeMillis());
         try {
-            os.startOS(taskToStart);
-            eventsGenerator.start();
-            Thread.sleep(timeout);
-//            System.out.println("Время timeout истекло!");
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            os.shutdownOS();
+            Thread.sleep(Verify.getLongFromList(50000L));
+        } catch (InterruptedException ex) {
         }
+    }
+
+    public static void turnOff(final OsAPI os, final EventGenerator eventsGenerator) {
+        System.out.println("Время ! ИСТЕКЛО" + System.currentTimeMillis());
+        os.shutdownOS();
         eventsGenerator.interrupt();
         try {
+            System.out.println("SHUT");
             eventsGenerator.join();
         } catch (final InterruptedException e) {
             e.printStackTrace();
@@ -33,19 +35,22 @@ public class BaseTest {
     }
 
     public static OrtOS createOS() {
+        System.out.println("CREATE");
         return new OrtOS();
     }
 
     public static EventGenerator createGenerator(
-            final OrtOS os,
-            final TestEvent... testEvents
+        final OrtOS os,
+        final TestEvent... testEvents
     ) {
         final List<Long> timeouts = new ArrayList<>();
         final List<EventGenerator.OsEvent> events = new ArrayList<>();
+        System.out.println(" !!!!!!!!!!!!!!!!!! ");
         for (final TestEvent testEvent : testEvents) {
             timeouts.add(testEvent.timeout);
             events.add(testEvent.event);
         }
+        System.out.println(" !!!!!!!!!!!!!!!!!! " + timeouts.size() + "   " + events.size());
         return new EventGenerator(
                 timeouts.iterator(),
                 events.iterator(),
