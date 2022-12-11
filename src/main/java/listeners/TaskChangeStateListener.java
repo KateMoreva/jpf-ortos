@@ -1,11 +1,7 @@
 package listeners;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import OS.OrtOS;
 import Tasks.Task;
@@ -13,9 +9,13 @@ import Tasks.TaskState;
 import gov.nasa.jpf.ListenerAdapter;
 import gov.nasa.jpf.jvm.bytecode.InstanceInvocation;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.search.Search;
-import gov.nasa.jpf.vm.*;
-import gov.nasa.jpf.vm.bytecode.InstructionInterface;
+import gov.nasa.jpf.vm.ClassInfo;
+import gov.nasa.jpf.vm.DynamicElementInfo;
+import gov.nasa.jpf.vm.ElementInfo;
+import gov.nasa.jpf.vm.Instruction;
+import gov.nasa.jpf.vm.MethodInfo;
+import gov.nasa.jpf.vm.ThreadInfo;
+import gov.nasa.jpf.vm.VM;
 
 public class TaskChangeStateListener extends ListenerAdapter {
 
@@ -25,7 +25,7 @@ public class TaskChangeStateListener extends ListenerAdapter {
     private Map<Integer, TaskState> taskToState = new ConcurrentHashMap<>();
 
     @Override
-    public void instructionExecuted(VM vm, ThreadInfo thread, Instruction nextInsn, Instruction executedInsn) {
+    public void executeInstruction(VM vm, ThreadInfo thread, Instruction executedInsn) {
         if (executedInsn instanceof JVMInvokeInstruction) {
             JVMInvokeInstruction call = (JVMInvokeInstruction) executedInsn;
             MethodInfo methodInfo = call.getInvokedMethod(thread);
@@ -96,56 +96,4 @@ public class TaskChangeStateListener extends ListenerAdapter {
             }
         }
     }
-
-//
-//    public void searchStarted(Search search) {
-//        String name = search.getVM().getSUTName() + ".tra"; //TODO revert this
-//        try {
-//            this.writer = new PrintWriter(name);
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Listener could not write to file " + name);
-//            search.terminate();
-//        }
-//    }
-//
-//    public abstract static class NullSource {
-//        protected InstructionInterface insn;
-//        protected ThreadInfo ti;
-//        protected ElementInfo ei;
-//        protected NullTracker.NullSource cause;
-//
-//        NullSource(ThreadInfo ti, InstructionInterface insn, ElementInfo ei) {
-//            this.ti = ti;
-//            this.insn = insn;
-//            this.ei = ei;
-//        }
-//
-//        public void setCause(NullTracker.NullSource cause) {
-//            this.cause = cause;
-//        }
-//
-//        public abstract void printOn(PrintWriter var1);
-//
-//        void printInsnOn(PrintWriter pw) {
-//            pw.printf("    instruction: [%04x] %s\n", this.insn.getPosition(), this.insn.toString());
-//        }
-//
-//        void printThreadInfoOn(PrintWriter pw) {
-//            pw.println("    executed by: " + this.ti.getName() + " (id=" + this.ti.getId() + ")");
-//        }
-//
-//        void printMethodInfoOn(PrintWriter pw, String msg, InstructionInterface instruction) {
-//            MethodInfo mi = instruction.getMethodInfo();
-//            ClassInfo ci = mi.getClassInfo();
-//            pw.println(msg + ci.getName() + '.' + mi.getLongName() + " (" + instruction.getFilePos() + ')');
-//        }
-//
-//        void printCauseOn(PrintWriter pw) {
-//            if (this.cause != null) {
-//                pw.println("set by: ");
-//                this.cause.printOn(pw);
-//            }
-//
-//        }
-//    }
 }

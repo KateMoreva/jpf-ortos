@@ -19,7 +19,7 @@ public class SemaphoreListener extends ListenerAdapter {
     }
 
     @Override
-    public void instructionExecuted(VM vm, ThreadInfo thread, Instruction nextInstruction, Instruction executedInsn) {
+    public void executeInstruction(VM vm, ThreadInfo thread, Instruction executedInsn) {
         if (!(executedInsn instanceof JVMInvokeInstruction)) {
             return;
         }
