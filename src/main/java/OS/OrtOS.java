@@ -89,6 +89,10 @@ public class OrtOS implements OsAPI {
         this.currentTask = null;
     }
 
+    public Dispatcher getDispatcher() {
+        return dispatcher;
+    }
+
     private Task getActiveTask() {
         final Task snapshotTask;
         currentTaskLock.lock();

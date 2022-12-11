@@ -29,6 +29,10 @@ public class Dispatcher extends Thread {
         System.out.println("Диспетчер готов к работе!");
     }
 
+    public TaskPriorityQueue getTaskQueue() {
+        return taskQueue;
+    }
+
     @Override
     public void run() {
         while (true) {

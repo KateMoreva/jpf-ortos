@@ -21,6 +21,8 @@ public class Task implements Comparable<Task> {
     public final List<Resource> mineResources;
     
     public Resource waitingFor;
+
+    private TaskStatus status;
     
     private final UserOsAPI os;
 
