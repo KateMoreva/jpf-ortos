@@ -1,6 +1,7 @@
 package OS;
 
 import EventGenerators.EventGenerator;
+import OS.exception.SemaphoreException;
 import Resources.Resource;
 import Resources.Semaphore;
 import Tasks.Task;
@@ -192,7 +193,6 @@ public class OrtOS implements OsAPI {
 
     @Override
     public void V(final Semaphore s) {
-//        Verify.beginAtomic();
         final Task activeTask = getActiveTask();
         if (activeTask != null && s.getOwnerTaskId() != activeTask.taskId) {
             throw new IllegalStateException("Задача пытается освободить ресурс, который ей не принадлежит.");
@@ -201,10 +201,8 @@ public class OrtOS implements OsAPI {
         // Локальные переменные удаляются после вызова releaseResource().
         if (s.getResource().isLocal) {
             resourceList.remove(s.getResource());
-//            info.decrementLocalResourcesDeclared();
         }
         System.out.printf("Задача %s отпустила ресурс %s\n", activeTask.toString(), s.getResource().toString());
-//    Verify.endAtomic();
     }
 
     /**

@@ -5,7 +5,7 @@ import Tasks.Task;
 
 import static OS.OrtOS.GLOBAL_RESOURCES_COUNT;
 
-public class GlobalResourceTest {
+public class GlobalResourceTest { // 5
 
     public static void main(String[] args) {
         final OrtOS os = new OrtOS();

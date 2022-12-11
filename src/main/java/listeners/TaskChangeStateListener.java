@@ -44,7 +44,7 @@ public class TaskChangeStateListener extends ListenerAdapter {
                     TaskState newState = TaskState.valueOf(String.valueOf(elementInfo.getObjectField("name").getStringChars()));
                     taskToState.put(taskId, newState);
                     System.out.println(taskId + " : " + currentState + " -> " + newState);
-                    switch (currentState) {
+                    switch (currentState) { // 9 - 11
                         case RUNNING: {
                                 if (!newState.equals(TaskState.WAITING)
                                         && !newState.equals(TaskState.DONE)
@@ -74,14 +74,14 @@ public class TaskChangeStateListener extends ListenerAdapter {
                             .filter(TaskState.WAITING::equals)
                             .count();
                     if (waitingCount > OrtOS.MAX_TASK_COUNT) {
-                        throw new RuntimeException("Tasks in WAITING state are more than MAX_TASK_COUNT");
+                        throw new RuntimeException("Tasks in WAITING state are more than MAX_TASK_COUNT"); // 3
                     }
                     long runningCount = taskToState.values()
                             .stream()
                             .filter(TaskState.RUNNING::equals)
                             .count();
                     if (runningCount > 1) {
-                        throw new RuntimeException("RUNNING tasks more than 1");
+                        throw new RuntimeException("RUNNING tasks more than 1"); // 1
                     }
                     if (newState == TaskState.DONE) {
                         int taskMineResourcesCount = currentTaskElementInfo.getObjectField("mineResources")
@@ -89,7 +89,7 @@ public class TaskChangeStateListener extends ListenerAdapter {
                             .getIntField("size");
                         System.out.println("Resources count on DONE: " + taskMineResourcesCount);
                         if (taskMineResourcesCount != 0) {
-                            throw new RuntimeException("Task resources on DONE must be 0");
+                            throw new RuntimeException("Task resources on DONE must be 0"); // 6
                         }
                     }
                 }
