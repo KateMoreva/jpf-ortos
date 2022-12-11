@@ -5,6 +5,8 @@ import Resources.Resource;
 import Resources.Semaphore;
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
+import gov.nasa.jpf.annotation.FilterField;
+import gov.nasa.jpf.vm.Verify;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,18 +18,23 @@ import java.util.function.Consumer;
 public class OrtOS implements OsAPI {
 
     public final static int MAX_TASK_COUNT = 32;
+    
     public final static int MAX_RECOURSE_COUNT = 16;
+    
     public final static int MAX_PRIORITY = 10;
+    
     public static final int GLOBAL_RESOURCES_COUNT = 4;
-
+    
     private final TaskPriorityQueue taskQueue;
     private final List<Resource> resourceList;
+    
     private final Dispatcher dispatcher;
     private Task currentTask;
-
+    
     private final Lock currentTaskLock = new ReentrantLock(false);
+    
     final AtomicBoolean shuttingDown = new AtomicBoolean(false);
-
+    
     public final OsInfo info;
 
     public void printSystemInfo() {
@@ -37,8 +44,10 @@ public class OrtOS implements OsAPI {
                         "Количество задач, которые дождались ожидаемых ресурсов: %d\n" +
                         "Максимальное количество задач в очереди: %d\n" +
                         "Максимальное количество ресурсов: %d\n" +
-                        "Количество прерываний: %d\n" +
+                        "Количество глобальных ресурсов: %d\n" +
+                        "Количество запрошенных локальных ресурсов: %d\n" +
                         "Количество объявленных локальных ресурсов: %d\n" +
+                        "Количество прерываний: %d\n" +
                         "Диспетчер корректно завершил работу: %b\n" +
                         "ОС корректно завершила работу: %b\n" +
                         "Наличие дедлоков: %b%n",
@@ -48,8 +57,10 @@ public class OrtOS implements OsAPI {
                 info.getGotWaitingForResourceTasksCount(),
                 info.getMaxTaskPull(),
                 info.getMaxRecoursesPull(),
-                info.getInterruptionsCount(),
+                info.getGlobalResourcesDeclared(),
+                info.getLocalResourcesRequested(),
                 info.getLocalResourcesDeclared(),
+                info.getInterruptionsCount(),
                 info.getDispatcherFinishedCorrectly(),
                 info.getOsFinishedCorrectly(),
                 info.hasDeadlocks()
@@ -176,6 +187,7 @@ public class OrtOS implements OsAPI {
 
     @Override
     public void V(final Semaphore s) {
+//        Verify.beginAtomic();
         final Task activeTask = getActiveTask();
         if (activeTask != null && s.getOwnerTaskId() != activeTask.taskId) {
             throw new IllegalStateException("Задача пытается освободить ресурс, который ей не принадлежит.");
@@ -184,8 +196,10 @@ public class OrtOS implements OsAPI {
         // Локальные переменные удаляются после вызова releaseResource().
         if (s.getResource().isLocal) {
             resourceList.remove(s.getResource());
+//            info.decrementLocalResourcesDeclared();
         }
         System.out.printf("Задача %s отпустила ресурс %s\n", activeTask.toString(), s.getResource().toString());
+//    Verify.endAtomic();
     }
 
     /**
@@ -196,6 +210,10 @@ public class OrtOS implements OsAPI {
         final boolean present = resourceList
                 .stream()
                 .anyMatch(resource -> resource.id == resourceId);
+        if (isLocal) {
+            System.out.println("Increment res");
+            info.incrementLocalResourcesRequested();
+        }
         if (present) {
             System.out.println("Попытка Ресурс с таким ID уже существует!");
             return null;
@@ -208,7 +226,10 @@ public class OrtOS implements OsAPI {
         System.out.println("Создан новый ресурс: " + resource);
 
         if (isLocal) {
+//            System.out.println("Increment res");
             info.incrementLocalResourcesDeclared();
+        } else {
+            info.incrementGlobalResourcesDeclared();
         }
         info.updateMaxRecoursesPull(resourceList.size() + 1);
 
@@ -222,10 +243,11 @@ public class OrtOS implements OsAPI {
      * коде пользовательского приложения.
      */
     public Task declareTask(int taskId, int priority) {
-//        System.out.println("IS SHUTDOWN"+shuttingDown);
-//        if (shuttingDown.get()) {
-//            return null;
-//        }
+//        log("IS SHUTDOWN"+shuttingDown);
+        Verify.getBoolean(true);
+        if (shuttingDown.get()) {
+            return null;
+        }
         final Task task = new Task(taskId, priority, this);
         System.out.println("Объявлена новая задача: " + task);
         activateTask(task);
@@ -258,7 +280,7 @@ public class OrtOS implements OsAPI {
                     System.out.println("Событие: создание локального ресурса.");
                     final Resource resource = declareResource(osEvent.resourceId, true);
                     if (resource != null) {
-                        System.out.println("Res npe check");
+//                        log.info("Res npe check");
                         getResource(resource);
                     }
                 });
@@ -277,6 +299,4 @@ public class OrtOS implements OsAPI {
                 throw new IllegalStateException("Событие: генератор вышел из чата.");
         }
     }
-
-
 }

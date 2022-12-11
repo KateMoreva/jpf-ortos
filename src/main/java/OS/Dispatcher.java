@@ -2,17 +2,23 @@ package OS;
 
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
+import gov.nasa.jpf.annotation.FilterField;
+import gov.nasa.jpf.vm.Verify;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Dispatcher extends Thread {
-
+    
     public final TaskPriorityQueue taskQueue;
+    
     public final Consumer<Task> currentTaskCallback;
+    
     public final Consumer<Task> taskDoneCallback;
-
+    
     private final AtomicBoolean isFree = new AtomicBoolean(true);
 
     public Dispatcher(final TaskPriorityQueue taskQueue, final Consumer<Task> currentTaskCallback, final Consumer<Task> taskDoneCallback) {
@@ -28,8 +34,9 @@ public class Dispatcher extends Thread {
         while (true) {
             Task task = null;
             try {
-                final List<Task> waitingTasks = new ArrayList<>();
+                final List<Task> waitingTasks = new CopyOnWriteArrayList<>();
                 while (true) {
+                    Verify.ignoreIf(taskQueue.size() < 2);
                     task = taskQueue.take();
                     if (task.isReady()) {
                         break;

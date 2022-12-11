@@ -1,15 +1,17 @@
 package Tasks;
 
+import gov.nasa.jpf.annotation.FilterField;
+
 public final class TaskPayload implements Runnable {
-
+    
     private static final long EPSILON = 0L;
-
-    long workingTime;
-
+    
+    private long workingTime;
+    
     final Task task;
 
     public TaskPayload(final Task task) {
-        this.workingTime = (long) (Math.random() * 1500) + 200L;
+        this.workingTime = 100;
         System.out.println("Working time " + workingTime);
         this.task = task;
     }

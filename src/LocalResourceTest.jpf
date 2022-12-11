@@ -1,5 +1,4 @@
-
-target=verification.GlobalResourceTest
+target=verification.LocalResourceTest
 classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main
 
 vm.por=true
@@ -10,7 +9,7 @@ search.class=gov.nasa.jpf.search.RandomSearch
 
 report.class=gov.nasa.jpf.report.Reporter
 report.console.class=gov.nasa.jpf.report.ConsolePublisher
-report.console.property_violation=error,trace
+report.console.property_violation=error,snapshot
 report.console.show_cg=true
 report.console.show_steps=true
 report.console.show_source=true

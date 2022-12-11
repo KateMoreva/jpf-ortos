@@ -4,22 +4,39 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class OsInfo {
+    
     private final AtomicInteger tasksDoneCount;
+    
     private final AtomicInteger tasksTookCount;
+    
     private final AtomicInteger waitingForResourceTasksCount;
+    
     private final AtomicInteger gotWaitingForResourceTasksCount;
+    
     private final AtomicInteger maxTaskPull;
+    
     private final AtomicInteger maxRecoursesPull;
+    
     private final AtomicInteger interruptionsCount;
+    
     private final AtomicBoolean dispatcherFinishedCorrectly;
+    
     private final AtomicBoolean osFinishedCorrectly;
+    
     private final AtomicInteger localResourcesDeclared;
+
+    private final AtomicInteger localResourcesRequested;
+
+    private final AtomicInteger globalResourcesDeclared;
+
 
     public OsInfo() {
         tasksDoneCount = new AtomicInteger(0);
         tasksTookCount = new AtomicInteger(1);
 
         localResourcesDeclared = new AtomicInteger(0);
+        localResourcesRequested = new AtomicInteger(0);
+        globalResourcesDeclared = new AtomicInteger(0);
 
         maxRecoursesPull = new AtomicInteger(0);
         maxTaskPull = new AtomicInteger(0);
@@ -35,6 +52,14 @@ public class OsInfo {
 
     public void incrementLocalResourcesDeclared() {
         localResourcesDeclared.incrementAndGet();
+    }
+
+    public void incrementLocalResourcesRequested() {
+        localResourcesRequested.incrementAndGet();
+    }
+
+    public void incrementGlobalResourcesDeclared() {
+        globalResourcesDeclared.incrementAndGet();
     }
 
     public void incrementWaitingForResourceTasksCount() {
@@ -119,5 +144,13 @@ public class OsInfo {
 
     public int getGotWaitingForResourceTasksCount() {
         return gotWaitingForResourceTasksCount.get();
+    }
+
+    public int getLocalResourcesRequested() {
+        return localResourcesRequested.get();
+    }
+
+    public int getGlobalResourcesDeclared() {
+        return globalResourcesDeclared.get();
     }
 }

@@ -2,21 +2,26 @@ package Tasks;
 
 import OS.UserOsAPI;
 import Resources.Resource;
+import gov.nasa.jpf.annotation.FilterField;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Task implements Comparable<Task> {
-
+    
     public static final Task POISSON_PILL = new Task(-1, Integer.MIN_VALUE, null, null);
-
+    
     public final int taskId;
+    
     public final int priority;
+    
     public final TaskPayload payload;
+    
     public final List<Resource> mineResources;
+    
     public Resource waitingFor;
-
+    
     private final UserOsAPI os;
 
     public Task(final int taskId, final int priority, final TaskPayload entry, final UserOsAPI os) {

@@ -2,9 +2,12 @@ package Tasks;
 
 import java.util.concurrent.PriorityBlockingQueue;
 
-public class TaskPriorityQueue {
+import gov.nasa.jpf.annotation.FilterField;
 
+public class TaskPriorityQueue {
+    
     private final PriorityBlockingQueue<Task> taskQueue;
+    
     private final int maxTaskCount;
 
     public TaskPriorityQueue(final int maxTaskCount) {

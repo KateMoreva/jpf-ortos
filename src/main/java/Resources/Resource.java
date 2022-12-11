@@ -1,8 +1,13 @@
 package Resources;
 
+import gov.nasa.jpf.annotation.FilterField;
+
 public class Resource {
+    
     public final int id;
+    
     public Semaphore semaphore;
+    
     public final boolean isLocal;
 
     public Resource(final int id) {
