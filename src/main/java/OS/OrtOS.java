@@ -5,8 +5,8 @@ import Resources.Resource;
 import Resources.Semaphore;
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
-import gov.nasa.jpf.annotation.FilterField;
 import gov.nasa.jpf.vm.Verify;
+import Tasks.TaskState;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,7 +20,7 @@ public class OrtOS implements OsAPI {
     public final static int MAX_TASK_COUNT = 32;
     
     public final static int MAX_RECOURSE_COUNT = 16;
-    
+
     public final static int MAX_PRIORITY = 10;
     
     public static final int GLOBAL_RESOURCES_COUNT = 4;
@@ -84,6 +84,8 @@ public class OrtOS implements OsAPI {
                 currentTask.waitingFor = null;
                 info.incrementGotWaitingForResourceTasksCount();
                 System.out.println("Задача " + takenTask + " получила необходимый ресурс " + res);
+            } else if (currentTask != null) {
+                currentTask.state = TaskState.WAITING;
             }
         }, doneTask -> info.incrementTasksDoneCount());
         this.currentTask = null;
@@ -163,7 +165,7 @@ public class OrtOS implements OsAPI {
     }
 
     @Override
-    public void P(final Semaphore newSemaphore) {
+    public synchronized void P(final Semaphore newSemaphore) {
         // TODO: можно ли хватать один и тот же ресурс?
         if (newSemaphore.getResource().ownerTaskId()== newSemaphore.getOwnerTaskId()) {
             System.out.println("Одна и та же задача хватает один и тот же ресурс.");
@@ -174,6 +176,7 @@ public class OrtOS implements OsAPI {
             // Отдаём управление другой задаче.
             withCurrentTask(task -> {
                 task.waitingFor = newSemaphore.getResource();
+                task.state = TaskState.WAITING;
                 info.incrementWaitingForResourceTasksCount();
                 System.out.printf("Задача %s ожидает освобождение ресурса %s \n", task.toString(), newSemaphore.getResource().toString());
                 terminateTask();
@@ -247,7 +250,6 @@ public class OrtOS implements OsAPI {
      * коде пользовательского приложения.
      */
     public Task declareTask(int taskId, int priority) {
-//        log("IS SHUTDOWN"+shuttingDown);
         Verify.getBoolean(true);
         if (shuttingDown.get()) {
             return null;

@@ -1,7 +1,5 @@
 package Tasks;
 
-import gov.nasa.jpf.annotation.FilterField;
-
 public final class TaskPayload implements Runnable {
     
     private static final long EPSILON = 0L;

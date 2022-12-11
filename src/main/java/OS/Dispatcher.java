@@ -2,8 +2,8 @@ package OS;
 
 import Tasks.Task;
 import Tasks.TaskPriorityQueue;
-import gov.nasa.jpf.annotation.FilterField;
 import gov.nasa.jpf.vm.Verify;
+import Tasks.TaskState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class Dispatcher extends Thread {
                     Verify.ignoreIf(taskQueue.size() < 2);
                     task = taskQueue.take();
                     if (task.isReady()) {
+                        task.state = TaskState.READY;
                         break;
                     }
                     waitingTasks.add(task);
@@ -60,8 +61,10 @@ public class Dispatcher extends Thread {
                     return;
                 }
                 System.out.println("Диспетчер взял задачу " + task);
+                task.state = TaskState.RUNNING;
                 currentTaskCallback.accept(task);
                 task.payload.run();
+                task.state = TaskState.WAITING;
                 isFree.set(true);
                 // isFree = true => Диспетчер нельзя прервать, когда он свободен.
                 if (!task.payload.done()) {
@@ -76,6 +79,9 @@ public class Dispatcher extends Thread {
                 currentTaskCallback.accept(null);
             } catch (final InterruptedException e) {
                 isFree.set(true);
+                if (task != null) {
+                    task.state = TaskState.WAITING;
+                }
                 // нас прервали!
                 if (task != null && !task.payload.done()) {
                     System.out.println("Диспетчер вернул задачу  " + task + " в очередь");

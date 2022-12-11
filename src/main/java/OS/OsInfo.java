@@ -62,6 +62,10 @@ public class OsInfo {
         globalResourcesDeclared.incrementAndGet();
     }
 
+    public void decrementLocalResourcesDeclared() {
+        localResourcesDeclared.decrementAndGet();
+    }
+
     public void incrementWaitingForResourceTasksCount() {
         waitingForResourceTasksCount.incrementAndGet();
     }
@@ -153,4 +157,5 @@ public class OsInfo {
     public int getGlobalResourcesDeclared() {
         return globalResourcesDeclared.get();
     }
+
 }

@@ -2,9 +2,6 @@ package Tasks;
 
 import OS.UserOsAPI;
 import Resources.Resource;
-import gov.nasa.jpf.annotation.FilterField;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,11 +16,8 @@ public class Task implements Comparable<Task> {
     public final TaskPayload payload;
     
     public final List<Resource> mineResources;
-    
+    public TaskState state;
     public Resource waitingFor;
-
-    private TaskStatus status;
-    
     private final UserOsAPI os;
 
     public Task(final int taskId, final int priority, final TaskPayload entry, final UserOsAPI os) {
@@ -33,6 +27,7 @@ public class Task implements Comparable<Task> {
         this.payload = entry;
         this.mineResources = new CopyOnWriteArrayList<>();
         this.os = os;
+        this.state = TaskState.READY;
     }
 
     public Task(final int taskId, final int priority, final UserOsAPI os) {
@@ -42,6 +37,7 @@ public class Task implements Comparable<Task> {
         this.payload = new TaskPayload(this);
         this.mineResources = new CopyOnWriteArrayList<>();
         this.os = os;
+        this.state = TaskState.READY;
     }
 
     public boolean isReady() {
