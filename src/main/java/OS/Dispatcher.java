@@ -43,7 +43,7 @@ public class Dispatcher extends Thread {
                     Verify.ignoreIf(taskQueue.size() < 2);
                     task = taskQueue.take();
                     if (task.isReady()) {
-                        task.state = TaskState.READY;
+                        task.setState(TaskState.READY);
                         break;
                     }
                     waitingTasks.add(task);
@@ -61,10 +61,10 @@ public class Dispatcher extends Thread {
                     return;
                 }
                 System.out.println("Диспетчер взял задачу " + task);
-                task.state = TaskState.RUNNING;
+                task.setState(TaskState.RUNNING);
                 currentTaskCallback.accept(task);
                 task.payload.run();
-                task.state = TaskState.WAITING;
+                task.setState(TaskState.WAITING);
                 isFree.set(true);
                 // isFree = true => Диспетчер нельзя прервать, когда он свободен.
                 if (!task.payload.done()) {
@@ -80,7 +80,7 @@ public class Dispatcher extends Thread {
             } catch (final InterruptedException e) {
                 isFree.set(true);
                 if (task != null) {
-                    task.state = TaskState.WAITING;
+                    task.setState(TaskState.WAITING);
                 }
                 // нас прервали!
                 if (task != null && !task.payload.done()) {

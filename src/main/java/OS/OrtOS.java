@@ -85,7 +85,7 @@ public class OrtOS implements OsAPI {
                 info.incrementGotWaitingForResourceTasksCount();
                 System.out.println("Задача " + takenTask + " получила необходимый ресурс " + res);
             } else if (currentTask != null) {
-                currentTask.state = TaskState.WAITING;
+                currentTask.setState(TaskState.WAITING);
             }
         }, doneTask -> info.incrementTasksDoneCount());
         this.currentTask = null;
@@ -176,7 +176,7 @@ public class OrtOS implements OsAPI {
             // Отдаём управление другой задаче.
             withCurrentTask(task -> {
                 task.waitingFor = newSemaphore.getResource();
-                task.state = TaskState.WAITING;
+                task.setState(TaskState.WAITING);
                 info.incrementWaitingForResourceTasksCount();
                 System.out.printf("Задача %s ожидает освобождение ресурса %s \n", task.toString(), newSemaphore.getResource().toString());
                 terminateTask();

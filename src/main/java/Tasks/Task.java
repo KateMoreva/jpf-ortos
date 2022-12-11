@@ -16,7 +16,7 @@ public class Task implements Comparable<Task> {
     public final TaskPayload payload;
     
     public final List<Resource> mineResources;
-    public TaskState state;
+    private TaskState state;
     public Resource waitingFor;
     private final UserOsAPI os;
 
@@ -38,6 +38,14 @@ public class Task implements Comparable<Task> {
         this.mineResources = new CopyOnWriteArrayList<>();
         this.os = os;
         this.state = TaskState.READY;
+    }
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
     }
 
     public boolean isReady() {
