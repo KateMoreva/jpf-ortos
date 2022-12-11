@@ -61,7 +61,7 @@ public class Dispatcher extends Thread {
                     return;
                 }
                 System.out.println("Диспетчер взял задачу " + task);
-                task.setState(TaskState.RUNNING);
+                task.setState(TaskState.WTF);
                 currentTaskCallback.accept(task);
                 task.payload.run();
                 task.setState(TaskState.WAITING);
