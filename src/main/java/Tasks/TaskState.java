@@ -5,7 +5,7 @@ public enum TaskState {
     RUNNING("RUNNING"),
     READY("READY"),
     WAITING("WAITING"),
-    WTF("WTF");
+    DONE("DONE");
 
 
     private String name;

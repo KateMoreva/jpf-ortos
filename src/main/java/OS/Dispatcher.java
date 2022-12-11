@@ -5,7 +5,6 @@ import Tasks.TaskPriorityQueue;
 import gov.nasa.jpf.vm.Verify;
 import Tasks.TaskState;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,7 +60,7 @@ public class Dispatcher extends Thread {
                     return;
                 }
                 System.out.println("Диспетчер взял задачу " + task);
-                task.setState(TaskState.WTF);
+                task.setState(TaskState.RUNNING);
                 currentTaskCallback.accept(task);
                 task.payload.run();
                 task.setState(TaskState.WAITING);
@@ -73,6 +72,7 @@ public class Dispatcher extends Thread {
                 } else {
                     task.releaseAllResources();
                     taskDoneCallback.accept(task);
+                    task.setState(TaskState.DONE);
                     System.out.println("Диспетчер отпустил задачу " + task);
                 }
                 // закончили работу
