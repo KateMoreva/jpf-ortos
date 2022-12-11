@@ -63,10 +63,10 @@ public class Dispatcher extends Thread {
                 task.setState(TaskState.RUNNING);
                 currentTaskCallback.accept(task);
                 task.payload.run();
-                task.setState(TaskState.WAITING);
                 isFree.set(true);
                 // isFree = true => Диспетчер нельзя прервать, когда он свободен.
                 if (!task.payload.done()) {
+                    task.setState(TaskState.WAITING);
                     System.out.println("Диспетчер вернул задачу  " + task + " в очередь");
                     taskQueue.add(task);
                 } else {

@@ -2,6 +2,9 @@ package Tasks;
 
 import OS.UserOsAPI;
 import Resources.Resource;
+
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -25,7 +28,7 @@ public class Task implements Comparable<Task> {
         this.taskId = taskId;
         this.priority = priority;
         this.payload = entry;
-        this.mineResources = new CopyOnWriteArrayList<>();
+        this.mineResources = Collections.synchronizedList(new LinkedList<>());
         this.os = os;
         this.state = TaskState.READY;
     }
@@ -35,7 +38,7 @@ public class Task implements Comparable<Task> {
         this.taskId = taskId;
         this.priority = priority;
         this.payload = new TaskPayload(this);
-        this.mineResources = new CopyOnWriteArrayList<>();
+        this.mineResources = Collections.synchronizedList(new LinkedList<>());
         this.os = os;
         this.state = TaskState.READY;
     }

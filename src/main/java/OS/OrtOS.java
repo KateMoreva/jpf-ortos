@@ -84,8 +84,6 @@ public class OrtOS implements OsAPI {
                 currentTask.waitingFor = null;
                 info.incrementGotWaitingForResourceTasksCount();
                 System.out.println("Задача " + takenTask + " получила необходимый ресурс " + res);
-            } else if (currentTask != null) {
-                currentTask.setState(TaskState.WAITING);
             }
         }, doneTask -> info.incrementTasksDoneCount());
         this.currentTask = null;
