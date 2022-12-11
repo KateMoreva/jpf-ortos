@@ -7,7 +7,8 @@ vm.por.sync_detection=true
 vm.path_output=false
 
 search.class=gov.nasa.jpf.search.RandomSearch
-
+cg.enumerate_random=true
+cg.randomize_choices=VAR_SEED
 report.class=gov.nasa.jpf.report.Reporter
 report.console.class=gov.nasa.jpf.report.ConsolePublisher
 report.console.property_violation=error,trace
