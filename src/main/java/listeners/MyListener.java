@@ -42,6 +42,7 @@ public class MyListener extends PropertyListenerAdapter {
 
     @Override
     public void executeInstruction(VM vm, ThreadInfo currentThread, Instruction instructionToExecute) {
+//        instructionToExecute.get
         System.err.println("executeInstruction()");
         super.executeInstruction(vm, currentThread, instructionToExecute);
     }

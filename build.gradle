@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'antlr'
+
 }
 apply plugin: 'java'
 apply plugin: 'application'
@@ -28,6 +30,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile name: 'jpf'
     compile name: 'jpf-annotations'
+    compile name: 'jpf-ctl'
+    antlr "org.antlr:antlr4:4.9.2"
 //    compile('org.slf4j:slf4j-api:1.7.26')
 //    compile("ch.qos.logback:logback-classic:1.2.3")
 }

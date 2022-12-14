@@ -1,5 +1,4 @@
-
-target=verification.GlobalResourceTest
+target=verification.InterruptionTest
 classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main
 native_classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main
 
@@ -10,6 +9,7 @@ vm.path_output=false
 search.class=gov.nasa.jpf.search.RandomSearch
 cg.enumerate_random=true
 cg.randomize_choices=VAR_SEED
+
 report.class=gov.nasa.jpf.report.Reporter
 report.console.class=gov.nasa.jpf.report.ConsolePublisher
 report.console.property_violation=error,trace
@@ -19,4 +19,4 @@ report.console.show_source=true
 report.console.show_code=true
 report.console.show_location=true
 
-listener=gov.nasa.jpf.listener.PreciseRaceDetector,.listener.ChoiceTracker,listeners.PartialTransitionSystemListener,listeners.TaskChangeStateListener
+listener=gov.nasa.jpf.listener.PreciseRaceDetector,.listener.ChoiceTracker,listeners.PartialTransitionSystemListener,listeners.TaskChangeStateListener,listeners.OSListener,listeners.SemaphoreListener

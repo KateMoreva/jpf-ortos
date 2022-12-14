@@ -8,8 +8,8 @@ public class SimpleTest extends BaseTest {
         final OrtOS ortOs = new OrtOS();
 
         final Thread eventsGenerator = new InterruptionTest(ortOs::interpretEvent);
-//        final Thread eventsGenerator = new EventGenerators.SimpleTests.LocalResourceTest(ortOs::interpretEvent);
-//        final Thread eventsGenerator = new GlobalResourceTest(ortOs::interpretEvent);
+//        final Thread eventsGenerator = new EventGenerators.SimpleTests.verification.LocalResourceTest(ortOs::interpretEvent);
+//        final Thread eventsGenerator = new verification.LocalResourceTest(ortOs::interpretEvent);
         final Task taskToStart = new Task(0, MAX_PRIORITY, ortOs);
         try {
             ortOs.startOS(taskToStart);
@@ -54,7 +54,7 @@ public class SimpleTest extends BaseTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        turnOff(os, generator);
+//        turnOff(os, generator);
         os.printSystemInfo();
         assert os.info.getInterruptionsCount() == 1;
         // "Количество прерываний должно быть равно 1"

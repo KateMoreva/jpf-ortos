@@ -3,13 +3,20 @@ package EventGenerators;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
+import gov.nasa.jpf.annotation.FilterField;
+
 public class EventGenerator extends Thread {
 
     public static class OsEvent {
+        
         public final EventType eventType;
+        
         public final Integer taskId;
+        
         public final Integer taskPriority;
+        
         public final Integer resourceId;
+        
         public final Integer globalResourceIndex;
 
         private OsEvent(EventType eventType, Integer taskId, Integer taskPriority, Integer resourceId, Integer globalResourceIndex) {
@@ -52,9 +59,11 @@ public class EventGenerator extends Thread {
         // выдай рандомный ресурс текущей задаче (не может быть выдана локальная переменная!)
         getRecourse,
     }
-
+    
     final Consumer<OsEvent> eventConsumer;
+    
     final Iterator<Long> sleepGenerator;
+    
     final Iterator<OsEvent> typeGenerator;
 
     public EventGenerator(

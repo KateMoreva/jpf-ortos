@@ -2,11 +2,14 @@ package Resources;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import gov.nasa.jpf.annotation.FilterField;
+
 public class Semaphore {
-
-    static final int RECOURSE_RELEASED = -1;
-
+    
+    public static final int RECOURSE_RELEASED = -1;
+    
     private final Resource resource;
+    
     private final AtomicInteger ownerTaskId;
 
     public Semaphore(Resource resource, int ownerTaskId) {

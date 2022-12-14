@@ -1,5 +1,4 @@
-
-target=verification.GlobalResourceTest
+target=verification.TaskStateChangeTest
 classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main
 native_classpath=/Users/ekaterina.moreva/Documents/Uni/jpf-ortos/build/classes/java/main
 
