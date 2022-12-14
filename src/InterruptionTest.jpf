@@ -19,4 +19,4 @@ report.console.show_source=true
 report.console.show_code=true
 report.console.show_location=true
 
-listener=gov.nasa.jpf.listener.PreciseRaceDetector,.listener.ChoiceTracker,listeners.PartialTransitionSystemListener,listeners.TaskChangeStateListener,listeners.OSListener
+listener=gov.nasa.jpf.listener.PreciseRaceDetector,.listener.ChoiceTracker,listeners.PartialTransitionSystemListener,listeners.TaskChangeStateListener,listeners.OSListener,listeners.SemaphoreListener

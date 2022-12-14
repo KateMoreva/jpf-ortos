@@ -43,7 +43,6 @@ public class OSListener extends ListenerAdapter {
                     int currentTaskPriority = currentTaskElementInfo.getObjectField("currentTask").getIntField("priority");
                     int newTaskPriority = elementInfo.getIntField("priority");
                     if (newTaskPriority > currentTaskPriority) {
-//                        int newTaskId = elementInfo.getObjectField("currentTask").getIntField("taskId");
                         taskInnerInfoMap.put(currentTaskId, new TaskInnerInfo(true, false));
                     }
 
@@ -72,10 +71,10 @@ public class OSListener extends ListenerAdapter {
                     int globalResourcesDeclared = currentTaskElementInfo.getObjectField("info").getObjectField("globalResourcesDeclared").getIntField("value");
                     System.out.println("declareResource: Local res declared: " + localResourcesDeclared);
                     System.out.println("declareResource: Global res declared: " + globalResourcesDeclared);
-                    if (globalResourcesDeclared > OrtOS.GLOBAL_RESOURCES_COUNT) {
+                    if (globalResourcesDeclared > OrtOS.GLOBAL_RESOURCES_COUNT) { //5
                         throw new RuntimeException("Нельзя объявить больше глобальных ресурсов чем GLOBAL_RESOURCES_COUNT");
                     }
-                    if (localResourcesDeclared > (OrtOS.MAX_RECOURSE_COUNT - OrtOS.GLOBAL_RESOURCES_COUNT)) {
+                    if (localResourcesDeclared > (OrtOS.MAX_RECOURSE_COUNT - OrtOS.GLOBAL_RESOURCES_COUNT)) { //6
                         throw new RuntimeException("Нельзя объявить больше локальных ресурсов чем MAX_RECOURSE_COUNT");
                     }
                 }
@@ -85,7 +84,7 @@ public class OSListener extends ListenerAdapter {
                     DynamicElementInfo elementInfo = (DynamicElementInfo) call.getArgumentValues(thread)[0];
                     int taskId = elementInfo.getIntField("taskId");
                     TaskInnerInfo taskInnerInfo = taskInnerInfoMap.get(taskId);
-                    if (taskInnerInfo != null && taskInnerInfo.higherPriority && !taskInnerInfo.previousTerminated) {
+                    if (taskInnerInfo != null && taskInnerInfo.higherPriority && !taskInnerInfo.previousTerminated) { //2
                         throw new RuntimeException("Высокоприоритетная задача не может ожидать завершения работы низкоприоритетной");
                     }
                 }
